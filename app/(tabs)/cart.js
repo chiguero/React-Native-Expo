@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { useCart } from '../../src/context/CartContext';
-import { Button } from '../../src/components';
+import { useCart } from '../../context/CartContext';
+import { Button } from '../../components';
 import "../../global.css";
 
 export default function CartScreen() {

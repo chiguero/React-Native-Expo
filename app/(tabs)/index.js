@@ -3,9 +3,9 @@ import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { MOCK_BOOKS, CATEGORIES } from '../../src/constants/mockData';
-import { useCart } from '../../src/context/CartContext';
-import { BookCard } from '../../src/components';
+import { MOCK_BOOKS, CATEGORIES } from '../../data/mockData';
+import { useCart } from '../../context/CartContext';
+import { BookCard } from '../../components';
 import "../../global.css";
 
 export default function CatalogScreen() {

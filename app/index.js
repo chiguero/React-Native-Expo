@@ -1,79 +1,41 @@
-import { Tabs } from 'expo-router';
-import { Text, View } from 'react-native';
-import { useCart } from '../../src/context/CartContext';
+import React from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { Button } from '../components';
+import "../global.css";
 
-export default function TabsLayout() {
-  const { getItemsCount } = useCart();
-  const itemsCount = getItemsCount();
+export default function LandingPage() {
+  const router = useRouter();
 
   return (
-    <Tabs
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#1e293b',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontFamily: 'Montserrat-Bold',
-        },
-        tabBarActiveTintColor: '#1e293b',
-        tabBarInactiveTintColor: '#64748b',
-        tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e2e8f0',
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 60,
-        },
-        tabBarLabelStyle: {
-          fontFamily: 'Montserrat-Medium',
-          fontSize: 12,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Catálogo',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>📚</Text>,
-        }}
-      />
-      
-      <Tabs.Screen
-        name="bestsellers"
-        options={{
-          title: 'Más Vendidos',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>⭐</Text>,
-        }}
-      />
-      
-      <Tabs.Screen
-        name="cart"
-        options={{
-          title: 'Carrito',
-          tabBarIcon: ({ color }) => (
-            <View>
-              <Text style={{ fontSize: 24 }}>🛒</Text>
-              {itemsCount > 0 && (
-                <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-                  <Text className="text-white text-xs font-MontserratBold">
-                    {itemsCount > 9 ? '9+' : itemsCount}
-                  </Text>
-                </View>
-              )}
-            </View>
-          ),
-        }}
-      />
-      
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Perfil',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>👤</Text>,
-        }}
-      />
-    </Tabs>
+    <SafeAreaView className="flex-1 bg-nexus-900">
+      <StatusBar style="light" />
+      <ScrollView className="flex-1" contentContainerClassName="px-6 py-8">
+        
+        <View className="items-center mb-12 mt-8">
+          <View className="w-32 h-32 bg-nexus-700 rounded-3xl items-center justify-center mb-6">
+            <Text className="text-6xl">📚</Text>
+          </View>
+          
+          <Text className="text-5xl font-MontserratBold text-white text-center mb-3">
+            Nexus
+          </Text>
+          
+          <Text className="text-xl font-MontserratRegular text-white text-center">
+            Tu librería digital favorita
+          </Text>
+        </View>
+
+        <Button
+          title="Explorar catálogo"
+          variant="primary"
+          size="lg"
+          onPress={() => router.push('/(tabs)')}
+          className="bg-white"
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }

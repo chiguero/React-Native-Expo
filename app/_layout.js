@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { CartProvider } from '../src/context/CartContext';
+import { CartProvider } from '../context/CartContext';
 
 SplashScreen.preventAutoHideAsync();
 

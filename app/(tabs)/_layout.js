@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Text, View } from 'react-native';
-import { useCart } from '../../src/context/CartContext';
+import { useCart } from '../../context/CartContext';
 
 export default function TabsLayout() {
   const { getItemsCount } = useCart();
