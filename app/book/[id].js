@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { MOCK_BOOKS } from '../../constants/mockData';
+import { MOCK_BOOKS } from '../../data/mockData';
 import { useCart } from '../../context/CartContext';
 import { Button } from '../../components';
 import "../../global.css";
