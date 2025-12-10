@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { MOCK_BOOKS, CATEGORIES } from '../../data/mockData';
+import { useBooks } from '../../hooks/useBooks';
 import { useCart } from '../../context/CartContext';
 import { BookCard } from '../../components';
 import "../../global.css";
@@ -11,13 +11,26 @@ import "../../global.css";
 export default function CatalogScreen() {
   const router = useRouter();
   const { addToCart } = useCart();
+  const { books, loading, error } = useBooks();
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredBooks = MOCK_BOOKS.filter(book => {
-    const matchesCategory = selectedCategory === 'Todos' || book.category === selectedCategory;
-    const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         book.author.toLowerCase().includes(searchQuery.toLowerCase());
+  // Extraer categorías únicas de los libros
+  const categories = [
+    { id: 1, name: "Todos", icon: "📚" },
+    ...Array.from(new Set(books.map(b => b.category || b.genre))).map((cat, i) => ({
+      id: i + 2,
+      name: cat,
+      icon: "📖"
+    }))
+  ];
+
+  const filteredBooks = books.filter(book => {
+    const category = book.category || book.genre;
+    const matchesCategory = selectedCategory === 'Todos' || category === selectedCategory;
+    const matchesSearch = 
+      (book.title?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+      (book.author?.toLowerCase() || '').includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -30,6 +43,31 @@ export default function CatalogScreen() {
     addToCart(book);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-50 items-center justify-center">
+        <ActivityIndicator size="large" color="#1e293b" />
+        <Text className="mt-4 font-MontserratMedium text-nexus-700">
+          Cargando libros...
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-50 items-center justify-center px-6">
+        <Text className="text-6xl mb-4">❌</Text>
+        <Text className="text-xl font-MontserratBold text-nexus-800 mb-2 text-center">
+          Error al cargar
+        </Text>
+        <Text className="text-base font-MontserratRegular text-nexus-500 text-center">
+          {error}
+        </Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -55,7 +93,7 @@ export default function CatalogScreen() {
           showsHorizontalScrollIndicator={false}
           className="mb-4"
         >
-          {CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <Pressable
               key={category.id}
               onPress={() => handleCategoryPress(category.name)}

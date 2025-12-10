@@ -1,10 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Text, View } from 'react-native';
 import { useCart } from '../../context/CartContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
   const { getItemsCount } = useCart();
   const itemsCount = getItemsCount();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -22,9 +24,9 @@ export default function TabsLayout() {
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
           borderTopColor: '#e2e8f0',
-          paddingBottom: 5,
+          paddingBottom: insets.bottom,
           paddingTop: 5,
-          height: 60,
+          height: 60 + insets.bottom,
         },
         tabBarLabelStyle: {
           fontFamily: 'Montserrat-Medium',
