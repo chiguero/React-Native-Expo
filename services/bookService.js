@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://lawebdeperez.es/apidog';
+const API_URL = 'https://lawebdeperez.es/apidog/books';
 
 export const bookService = {
   // Obtener todos los libros

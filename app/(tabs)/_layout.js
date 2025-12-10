@@ -43,14 +43,6 @@ export default function TabsLayout() {
       />
       
       <Tabs.Screen
-        name="bestsellers"
-        options={{
-          title: 'Más Vendidos',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>⭐</Text>,
-        }}
-      />
-      
-      <Tabs.Screen
         name="cart"
         options={{
           title: 'Carrito',

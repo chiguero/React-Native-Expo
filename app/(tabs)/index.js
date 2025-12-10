@@ -18,18 +18,22 @@ export default function CatalogScreen() {
   // Extraer categorías únicas de los libros
   const categories = [
     { id: 1, name: "Todos", icon: "📚" },
-    ...Array.from(new Set(books.map(b => b.category || b.genre))).map((cat, i) => ({
+    ...Array.from(new Set(books.map(b => {
+      const cat = b.genre || b.category;
+      return typeof cat === 'object' ? cat.name : cat;
+    }))).filter(Boolean).map((cat, i) => ({
       id: i + 2,
-      name: cat,
+      name: String(cat),
       icon: "📖"
     }))
   ];
 
   const filteredBooks = books.filter(book => {
-    const category = book.category || book.genre;
-    const matchesCategory = selectedCategory === 'Todos' || category === selectedCategory;
+    const bookCategory = book.genre || book.category;
+    const categoryName = typeof bookCategory === 'object' ? bookCategory.name : bookCategory;
+    const matchesCategory = selectedCategory === 'Todos' || categoryName === selectedCategory;
     const matchesSearch = 
-      (book.title?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+      (book.name?.toLowerCase() || book.title?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
       (book.author?.toLowerCase() || '').includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -40,7 +44,14 @@ export default function CatalogScreen() {
   };
 
   const handleAddToCart = (book) => {
-    addToCart(book);
+    // Normalizar el libro antes de añadirlo
+    const normalizedBook = {
+      ...book,
+      title: book.name || book.title,
+      price: book.price || 19.99,
+      cover: book.cover || '📕',
+    };
+    addToCart(normalizedBook);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
@@ -134,7 +145,11 @@ export default function CatalogScreen() {
           filteredBooks.map(book => (
             <BookCard
               key={book.id}
-              book={book}
+              book={{
+                ...book,
+                title: book.name || book.title,
+                cover: book.cover || '📕',
+              }}
               onPress={(book) => router.push(`/book/${book.id}`)}
               onAddToCart={handleAddToCart}
             />
