@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, ActivityIndicator, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, ActivityIndicator, Image, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -15,6 +15,8 @@ export default function BookDetailScreen() {
   const [quantity, setQuantity] = useState(1);
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [scaleAnim] = useState(new Animated.Value(1));
+  const [scaleAnim2] = useState(new Animated.Value(1));
 
   useEffect(() => {
     loadBook();
@@ -29,8 +31,25 @@ export default function BookDetailScreen() {
     setLoading(false);
   };
 
+  const animateButton = (animValue) => {
+    Animated.sequence([
+      Animated.timing(animValue, {
+        toValue: 0.92,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
   const handleAddToCart = () => {
     if (!book) return;
+    
+    animateButton(scaleAnim);
     
     for (let i = 0; i < quantity; i++) {
       addToCart({
@@ -42,6 +61,7 @@ export default function BookDetailScreen() {
   };
 
   const handleBuyNow = () => {
+    animateButton(scaleAnim2);
     handleAddToCart();
     setTimeout(() => router.push('/(tabs)/cart'), 300);
   };
@@ -255,23 +275,28 @@ export default function BookDetailScreen() {
           </View>
         </View>
 
-        {/* Actions */}
-        <Button
-          title="Añadir al carrito"
-          variant="outline"
-          size="lg"
-          onPress={handleAddToCart}
-          icon="🛒"
-          className="mb-3"
-        />
+        {/* Actions con animación */}
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }} className="mb-3">
+          <Button
+            title="Añadir al carrito"
+            variant="outline"
+            size="lg"
+            onPress={handleAddToCart}
+            icon="🛒"
+            haptic={false}
+          />
+        </Animated.View>
 
-        <Button
-          title="Comprar ahora"
-          variant="primary"
-          size="lg"
-          onPress={handleBuyNow}
-          icon="💳"
-        />
+        <Animated.View style={{ transform: [{ scale: scaleAnim2 }] }}>
+          <Button
+            title="Comprar ahora"
+            variant="primary"
+            size="lg"
+            onPress={handleBuyNow}
+            icon="💳"
+            haptic={false}
+          />
+        </Animated.View>
 
         <View className="h-20" />
       </ScrollView>

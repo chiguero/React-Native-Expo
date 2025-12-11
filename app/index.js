@@ -15,6 +15,7 @@ export default function LandingPage() {
       <ScrollView className="flex-1" contentContainerClassName="px-6 py-8">
         
         <View className="items-center mb-12 mt-8">
+          {/* Logo con emoji de libro */}
           <View className="w-32 h-32 bg-nexus-700 rounded-3xl items-center justify-center mb-6">
             <Text className="text-6xl">📚</Text>
           </View>

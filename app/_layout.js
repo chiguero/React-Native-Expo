@@ -42,8 +42,20 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="book/[id]" options={{ title: 'Detalle del Libro' }} />
+          <Stack.Screen 
+            name="(tabs)" 
+            options={{ 
+              headerShown: false,
+              title: '' 
+            }} 
+          />
+          <Stack.Screen 
+            name="book/[id]" 
+            options={{ 
+              title: 'Detalle del Libro',
+              headerBackTitle: 'Volver'
+            }} 
+          />
         </Stack>
       </CartProvider>
     </SafeAreaProvider>

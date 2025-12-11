@@ -1,8 +1,10 @@
-import React from 'react';
-import { View, Text, Pressable, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, Image, Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 export const BookCard = ({ book, onPress, onAddToCart }) => {
+  const [scaleAnim] = useState(new Animated.Value(1));
+
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress?.(book);
@@ -10,6 +12,21 @@ export const BookCard = ({ book, onPress, onAddToCart }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
+    
+    // Animación de escala
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onAddToCart?.(book);
   };
@@ -97,22 +114,24 @@ export const BookCard = ({ book, onPress, onAddToCart }) => {
             )}
           </View>
 
-          {/* Add Button con gradiente */}
-          <Pressable
-            onPress={handleAddToCart}
-            className="bg-indigo-600 active:bg-indigo-700 py-3 px-4 rounded-xl flex-row items-center justify-center shadow-md"
-            style={{
-              shadowColor: '#6366f1',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-            }}
-          >
-            <Text className="text-white text-sm font-MontserratBold mr-2">
-              Añadir al carrito
-            </Text>
-            <Text className="text-lg">🛒</Text>
-          </Pressable>
+          {/* Add Button con animación */}
+          <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+            <Pressable
+              onPress={handleAddToCart}
+              className="bg-indigo-600 active:bg-indigo-700 py-3 px-4 rounded-xl flex-row items-center justify-center shadow-md"
+              style={{
+                shadowColor: '#6366f1',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+              }}
+            >
+              <Text className="text-white text-sm font-MontserratBold mr-2">
+                Añadir al carrito
+              </Text>
+              <Text className="text-lg">🛒</Text>
+            </Pressable>
+          </Animated.View>
         </View>
       </View>
     </Pressable>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useCart } from '../../context/CartContext';
@@ -75,10 +75,19 @@ export default function CartScreen() {
         {cart.map(item => (
           <View key={item.id} className="bg-white rounded-2xl p-4 mb-3 shadow-sm">
             <View className="flex-row">
-              {/* Cover */}
-              <View className="w-16 h-24 bg-nexus-100 rounded-xl items-center justify-center mr-4">
-                <Text className="text-4xl">{item.cover}</Text>
-              </View>
+              {/* Cover con imagen */}
+              {item.coverImage ? (
+                <Image 
+                  source={{ uri: item.coverImage }}
+                  className="w-16 h-24 rounded-xl mr-4"
+                  style={{ width: 64, height: 96 }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="w-16 h-24 bg-nexus-100 rounded-xl items-center justify-center mr-4">
+                  <Text className="text-4xl">📕</Text>
+                </View>
+              )}
 
               {/* Info */}
               <View className="flex-1">
