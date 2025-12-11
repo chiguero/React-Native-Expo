@@ -33,7 +33,6 @@ export default function LandingPage() {
           variant="primary"
           size="lg"
           onPress={() => router.push('/(tabs)')}
-          className="bg-white"
         />
       </ScrollView>
     </SafeAreaView>

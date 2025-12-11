@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Pressable, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -35,24 +35,15 @@ export default function BookDetailScreen() {
     for (let i = 0; i < quantity; i++) {
       addToCart({
         ...book,
-        title: book.name || book.title,
         author: typeof book.author === 'object' ? book.author?.name : book.author,
       });
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    Alert.alert(
-      '¡Añadido al carrito!',
-      `${quantity} ${quantity === 1 ? 'libro' : 'libros'} añadido(s)`,
-      [
-        { text: 'Seguir comprando', style: 'cancel' },
-        { text: 'Ir al carrito', onPress: () => router.push('/(tabs)/cart') },
-      ]
-    );
   };
 
   const handleBuyNow = () => {
     handleAddToCart();
-    setTimeout(() => router.push('/(tabs)/cart'), 500);
+    setTimeout(() => router.push('/(tabs)/cart'), 300);
   };
 
   if (loading) {
@@ -78,7 +69,7 @@ export default function BookDetailScreen() {
 
   const authorName = typeof book.author === 'object' ? book.author?.name : book.author;
   const categoryName = typeof book.category === 'object' ? book.category?.name : book.category;
-  const genreName = typeof book.genre === 'object' ? book.genre?.name : book.genre;
+  const publisherName = typeof book.publisher === 'object' ? book.publisher?.name : book.publisher;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -86,9 +77,18 @@ export default function BookDetailScreen() {
         
         {/* Cover Section */}
         <View className="bg-white rounded-3xl p-6 mb-4 items-center shadow-sm">
-          <View className="w-40 h-56 bg-nexus-100 rounded-2xl items-center justify-center mb-4">
-            <Text className="text-8xl">{book.cover || '📕'}</Text>
-          </View>
+          {book.coverImage ? (
+            <Image 
+              source={{ uri: book.coverImage }}
+              className="w-40 h-56 rounded-2xl mb-4"
+              style={{ width: 160, height: 224 }}
+              resizeMode="cover"
+            />
+          ) : (
+            <View className="w-40 h-56 bg-nexus-100 rounded-2xl items-center justify-center mb-4">
+              <Text className="text-8xl">📕</Text>
+            </View>
+          )}
           
           {book.bestseller && (
             <View className="bg-amber-500 px-4 py-2 rounded-full">
@@ -102,7 +102,7 @@ export default function BookDetailScreen() {
         {/* Info Section */}
         <View className="bg-white rounded-3xl p-6 mb-4 shadow-sm">
           <Text className="text-2xl font-MontserratBold text-nexus-900 mb-2">
-            {book.name || book.title}
+            {book.title}
           </Text>
           
           <Text className="text-lg font-MontserratMedium text-nexus-500 mb-4">
@@ -124,22 +124,41 @@ export default function BookDetailScreen() {
             </View>
           )}
 
-          {/* Category */}
-          <View className="flex-row items-center mb-4">
-            <View className="bg-nexus-100 px-4 py-2 rounded-lg">
-              <Text className="text-sm font-MontserratSemiBold text-nexus-700">
-                📚 {categoryName || genreName || 'General'}
-              </Text>
-            </View>
+          {/* Category & Publisher */}
+          <View className="flex-row flex-wrap items-center mb-4">
+            {categoryName && (
+              <View className="bg-nexus-100 px-4 py-2 rounded-lg mr-2 mb-2">
+                <Text className="text-sm font-MontserratSemiBold text-nexus-700">
+                  📚 {categoryName}
+                </Text>
+              </View>
+            )}
             
-            {book.stock && (
-              <View className="bg-green-100 px-4 py-2 rounded-lg ml-2">
-                <Text className="text-sm font-MontserratSemiBold text-green-700">
-                  ✓ En stock: {book.stock}
+            {publisherName && (
+              <View className="bg-purple-100 px-4 py-2 rounded-lg mr-2 mb-2">
+                <Text className="text-sm font-MontserratSemiBold text-purple-700">
+                  📖 {publisherName}
+                </Text>
+              </View>
+            )}
+
+            {book.year && (
+              <View className="bg-blue-100 px-4 py-2 rounded-lg mb-2">
+                <Text className="text-sm font-MontserratSemiBold text-blue-700">
+                  📅 {book.year}
                 </Text>
               </View>
             )}
           </View>
+
+          {/* ISBN */}
+          {book.isbn && (
+            <View className="mb-4">
+              <Text className="text-xs font-MontserratRegular text-nexus-400">
+                ISBN: {book.isbn}
+              </Text>
+            </View>
+          )}
 
           {/* Description */}
           {book.description && (

@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export const BookCard = ({ book, onPress, onAddToCart }) => {
   const handlePress = () => {
@@ -31,19 +30,26 @@ export const BookCard = ({ book, onPress, onAddToCart }) => {
     >
       {/* Badge Bestseller */}
       {book.bestseller && (
-        <View className="absolute -top-2 -right-2 bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-1.5 rounded-full z-10 shadow-md">
+        <View className="absolute -top-2 -right-2 bg-amber-500 px-3 py-1.5 rounded-full z-10 shadow-md">
           <Text className="text-xs font-MontserratBold text-white">⭐ Bestseller</Text>
         </View>
       )}
 
       <View className="flex-row">
-        {/* Cover con gradiente */}
+        {/* Cover con imagen */}
         <View className="relative mr-4">
-          <View className="w-24 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl items-center justify-center shadow-md">
-            <Text className="text-6xl">{book.cover || '📕'}</Text>
-          </View>
-          {/* Brillo decorativo */}
-          <View className="absolute top-2 left-2 w-8 h-8 bg-white/30 rounded-full blur-sm" />
+          {book.coverImage ? (
+            <Image 
+              source={{ uri: book.coverImage }}
+              className="w-24 h-32 rounded-2xl"
+              style={{ width: 96, height: 128 }}
+              resizeMode="cover"
+            />
+          ) : (
+            <View className="w-24 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl items-center justify-center shadow-md">
+              <Text className="text-6xl">📕</Text>
+            </View>
+          )}
         </View>
 
         {/* Info */}
@@ -94,7 +100,7 @@ export const BookCard = ({ book, onPress, onAddToCart }) => {
           {/* Add Button con gradiente */}
           <Pressable
             onPress={handleAddToCart}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 active:from-indigo-700 active:to-purple-700 py-3 px-4 rounded-xl flex-row items-center justify-center shadow-md"
+            className="bg-indigo-600 active:bg-indigo-700 py-3 px-4 rounded-xl flex-row items-center justify-center shadow-md"
             style={{
               shadowColor: '#6366f1',
               shadowOffset: { width: 0, height: 4 },
