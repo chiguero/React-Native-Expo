@@ -1,13 +1,17 @@
 import React from 'react';
 import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components';
 import "../../global.css";
 
 export default function CartScreen() {
+  const router = useRouter();
   const { cart, removeFromCart, updateQuantity, getTotal, clearCart, getItemsCount } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const handleRemove = (bookId) => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -25,7 +29,38 @@ export default function CartScreen() {
     );
   };
 
+  const handleClearCart = () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    Alert.alert(
+      'Vaciar carrito',
+      '¿Estás seguro de que quieres eliminar todos los libros?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Vaciar',
+          style: 'destructive',
+          onPress: () => {
+            clearCart();
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          },
+        },
+      ]
+    );
+  };
+
   const handleCheckout = () => {
+    if (!isAuthenticated) {
+      Alert.alert(
+        'Inicia sesión',
+        'Debes iniciar sesión para realizar la compra',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Ir a perfil', onPress: () => router.push('/(tabs)/profile') },
+        ]
+      );
+      return;
+    }
+
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert(
       '¡Compra realizada!',
@@ -60,9 +95,21 @@ export default function CartScreen() {
       <ScrollView className="flex-1" contentContainerClassName="px-4 py-4">
         
         {/* Header */}
-        <Text className="text-2xl font-MontserratBold text-nexus-900 mb-4">
-          🛒 Mi Carrito
-        </Text>
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-2xl font-MontserratBold text-nexus-900">
+            🛒 Mi Carrito
+          </Text>
+          
+          {/* Botón vaciar carrito */}
+          <Pressable
+            onPress={handleClearCart}
+            className="bg-red-100 px-4 py-2 rounded-lg active:bg-red-200"
+          >
+            <Text className="text-red-600 font-MontserratSemiBold text-sm">
+              🗑️ Vaciar
+            </Text>
+          </Pressable>
+        </View>
 
         {/* Items Count */}
         <View className="bg-nexus-800 rounded-xl p-4 mb-4">
@@ -73,7 +120,14 @@ export default function CartScreen() {
 
         {/* Cart Items */}
         {cart.map(item => (
-          <View key={item.id} className="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+          <Pressable 
+            key={item.id} 
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push(`/book/${item.id}`);
+            }}
+            className="bg-white rounded-2xl p-4 mb-3 shadow-sm active:bg-gray-50"
+          >
             <View className="flex-row">
               {/* Cover con imagen */}
               {item.coverImage ? (
@@ -107,7 +161,8 @@ export default function CartScreen() {
             <View className="flex-row items-center justify-between mt-4 pt-4 border-t border-gray-100">
               <View className="flex-row items-center">
                 <Pressable
-                  onPress={() => {
+                  onPress={(e) => {
+                    e.stopPropagation();
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     updateQuantity(item.id, item.quantity - 1);
                   }}
@@ -121,7 +176,8 @@ export default function CartScreen() {
                 </Text>
 
                 <Pressable
-                  onPress={() => {
+                  onPress={(e) => {
+                    e.stopPropagation();
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     updateQuantity(item.id, item.quantity + 1);
                   }}
@@ -133,7 +189,10 @@ export default function CartScreen() {
 
               {/* Remove Button */}
               <Pressable
-                onPress={() => handleRemove(item.id)}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  handleRemove(item.id);
+                }}
                 className="bg-red-100 px-4 py-2 rounded-lg"
               >
                 <Text className="text-red-600 font-MontserratSemiBold text-sm">
@@ -150,7 +209,7 @@ export default function CartScreen() {
                 </Text>
               </Text>
             </View>
-          </View>
+          </Pressable>
         ))}
 
         <View className="h-32" />

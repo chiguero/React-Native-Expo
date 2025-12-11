@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CartProvider } from '../context/CartContext';
+import { AuthProvider } from '../context/AuthContext';
 import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
@@ -29,35 +30,37 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <CartProvider>
-        <Stack
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#1e293b',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontFamily: 'Montserrat-Bold',
-            },
-          }}
-        >
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen 
-            name="(tabs)" 
-            options={{ 
-              headerShown: false,
-              title: '' 
-            }} 
-          />
-          <Stack.Screen 
-            name="book/[id]" 
-            options={{ 
-              title: 'Detalle del Libro',
-              headerBackTitle: 'Volver'
-            }} 
-          />
-        </Stack>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: '#1e293b',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontFamily: 'Montserrat-Bold',
+              },
+            }}
+          >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen 
+              name="(tabs)" 
+              options={{ 
+                headerShown: false,
+                title: '' 
+              }} 
+            />
+            <Stack.Screen 
+              name="book/[id]" 
+              options={{ 
+                title: 'Detalle del Libro',
+                headerBackTitle: 'Volver'
+              }} 
+            />
+          </Stack>
+        </CartProvider>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

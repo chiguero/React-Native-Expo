@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, Image, Animated } from 'react-native';
+import { View, Text, Pressable, Image, Animated, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { useAuth } from '../context/AuthContext';
 
 export const BookCard = ({ book, onPress, onAddToCart }) => {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [scaleAnim] = useState(new Animated.Value(1));
 
   const handlePress = () => {
@@ -13,6 +17,20 @@ export const BookCard = ({ book, onPress, onAddToCart }) => {
   const handleAddToCart = (e) => {
     e.stopPropagation();
     
+    // Validar si está logueado
+    if (!isAuthenticated) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      Alert.alert(
+        'Inicia sesión',
+        'Debes iniciar sesión para añadir libros al carrito',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Ir a perfil', onPress: () => router.push('/(tabs)/profile') },
+        ]
+      );
+      return;
+    }
+
     // Animación de escala
     Animated.sequence([
       Animated.timing(scaleAnim, {

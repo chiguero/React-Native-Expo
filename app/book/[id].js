@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, ActivityIndicator, Image, Animated } from 'react-native';
+import { View, Text, ScrollView, Pressable, ActivityIndicator, Image, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { bookService } from '../../services/bookService';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components';
 import "../../global.css";
 
@@ -12,6 +13,7 @@ export default function BookDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,20 @@ export default function BookDetailScreen() {
 
   const handleAddToCart = () => {
     if (!book) return;
+
+    // Validar si está logueado
+    if (!isAuthenticated) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      Alert.alert(
+        'Inicia sesión',
+        'Debes iniciar sesión para añadir libros al carrito',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Ir a perfil', onPress: () => router.push('/(tabs)/profile') },
+        ]
+      );
+      return;
+    }
     
     animateButton(scaleAnim);
     
@@ -61,6 +77,22 @@ export default function BookDetailScreen() {
   };
 
   const handleBuyNow = () => {
+    if (!book) return;
+
+    // Validar si está logueado
+    if (!isAuthenticated) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      Alert.alert(
+        'Inicia sesión',
+        'Debes iniciar sesión para comprar libros',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Ir a perfil', onPress: () => router.push('/(tabs)/profile') },
+        ]
+      );
+      return;
+    }
+
     animateButton(scaleAnim2);
     handleAddToCart();
     setTimeout(() => router.push('/(tabs)/cart'), 300);
