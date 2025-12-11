@@ -2,7 +2,9 @@ import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CartProvider } from '../context/CartContext';
+import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,22 +28,24 @@ export default function RootLayout() {
   }
 
   return (
-    <CartProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#1e293b',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontFamily: 'Montserrat-Bold',
-          },
-        }}
-      >
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="book/[id]" options={{ title: 'Detalle del Libro' }} />
-      </Stack>
-    </CartProvider>
+    <SafeAreaProvider>
+      <CartProvider>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#1e293b',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontFamily: 'Montserrat-Bold',
+            },
+          }}
+        >
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="book/[id]" options={{ title: 'Detalle del Libro' }} />
+        </Stack>
+      </CartProvider>
+    </SafeAreaProvider>
   );
 }

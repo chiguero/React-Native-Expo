@@ -33,7 +33,11 @@ export default function BookDetailScreen() {
     if (!book) return;
     
     for (let i = 0; i < quantity; i++) {
-      addToCart(book);
+      addToCart({
+        ...book,
+        title: book.name || book.title,
+        author: typeof book.author === 'object' ? book.author?.name : book.author,
+      });
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert(
@@ -72,6 +76,10 @@ export default function BookDetailScreen() {
     );
   }
 
+  const authorName = typeof book.author === 'object' ? book.author?.name : book.author;
+  const categoryName = typeof book.category === 'object' ? book.category?.name : book.category;
+  const genreName = typeof book.genre === 'object' ? book.genre?.name : book.genre;
+
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1" contentContainerClassName="px-4 py-4">
@@ -94,11 +102,11 @@ export default function BookDetailScreen() {
         {/* Info Section */}
         <View className="bg-white rounded-3xl p-6 mb-4 shadow-sm">
           <Text className="text-2xl font-MontserratBold text-nexus-900 mb-2">
-            {book.title}
+            {book.name || book.title}
           </Text>
           
           <Text className="text-lg font-MontserratMedium text-nexus-500 mb-4">
-            {book.author}
+            {authorName || 'Autor desconocido'}
           </Text>
 
           {/* Rating */}
@@ -120,7 +128,7 @@ export default function BookDetailScreen() {
           <View className="flex-row items-center mb-4">
             <View className="bg-nexus-100 px-4 py-2 rounded-lg">
               <Text className="text-sm font-MontserratSemiBold text-nexus-700">
-                📚 {book.category || book.genre || 'General'}
+                📚 {categoryName || genreName || 'General'}
               </Text>
             </View>
             
