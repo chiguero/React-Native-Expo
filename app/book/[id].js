@@ -36,21 +36,30 @@ export default function BookDetailScreen() {
   const animateButton = (animValue) => {
     Animated.sequence([
       Animated.timing(animValue, {
-        toValue: 0.92,
-        duration: 100,
+        toValue: 0.96,
+        duration: 50,
         useNativeDriver: true,
       }),
       Animated.timing(animValue, {
         toValue: 1,
-        duration: 100,
+        duration: 50,
         useNativeDriver: true,
       }),
     ]).start();
   };
 
-  const handleAddToCart = () => {
+  const addBookToCart = () => {
     if (!book) return;
+    
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        ...book,
+        author: typeof book.author === 'object' ? book.author?.name : book.author,
+      });
+    }
+  };
 
+  const handleAddToCart = () => {
     // Validar si está logueado
     if (!isAuthenticated) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -66,19 +75,11 @@ export default function BookDetailScreen() {
     }
     
     animateButton(scaleAnim);
-    
-    for (let i = 0; i < quantity; i++) {
-      addToCart({
-        ...book,
-        author: typeof book.author === 'object' ? book.author?.name : book.author,
-      });
-    }
+    addBookToCart();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
   const handleBuyNow = () => {
-    if (!book) return;
-
     // Validar si está logueado
     if (!isAuthenticated) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -94,8 +95,9 @@ export default function BookDetailScreen() {
     }
 
     animateButton(scaleAnim2);
-    handleAddToCart();
-    setTimeout(() => router.push('/(tabs)/cart'), 300);
+    addBookToCart();
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setTimeout(() => router.push('/(tabs)/cart'), 200);
   };
 
   if (loading) {
@@ -307,7 +309,7 @@ export default function BookDetailScreen() {
           </View>
         </View>
 
-        {/* Actions con animación */}
+        {/* Actions con animación independiente */}
         <Animated.View style={{ transform: [{ scale: scaleAnim }] }} className="mb-3">
           <Button
             title="Añadir al carrito"

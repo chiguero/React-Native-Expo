@@ -31,16 +31,16 @@ export const BookCard = ({ book, onPress, onAddToCart }) => {
       return;
     }
 
-    // Animación de escala
+    // Animación más rápida y natural
     Animated.sequence([
       Animated.timing(scaleAnim, {
-        toValue: 0.9,
-        duration: 100,
+        toValue: 0.95,
+        duration: 50,
         useNativeDriver: true,
       }),
       Animated.timing(scaleAnim, {
         toValue: 1,
-        duration: 100,
+        duration: 50,
         useNativeDriver: true,
       }),
     ]).start();

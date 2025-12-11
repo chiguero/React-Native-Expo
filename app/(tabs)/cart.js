@@ -94,9 +94,19 @@ export default function CartScreen() {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1" contentContainerClassName="px-4 py-4">
         
-        {/* Header */}
-        <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-2xl font-MontserratBold text-nexus-900">
+        {/* Header con botón volver */}
+        <View className="flex-row items-center mb-4">
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.back();
+            }}
+            className="w-10 h-10 bg-white rounded-xl items-center justify-center mr-3 shadow-sm active:bg-gray-100"
+          >
+            <Text className="text-xl">←</Text>
+          </Pressable>
+
+          <Text className="text-2xl font-MontserratBold text-nexus-900 flex-1">
             🛒 Mi Carrito
           </Text>
           

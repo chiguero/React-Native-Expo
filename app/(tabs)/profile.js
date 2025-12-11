@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components';
 import "../../global.css";
 
 export default function ProfileScreen() {
-  const router = useRouter();
   const { user, isAuthenticated, login, logout } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -248,7 +246,7 @@ export default function ProfileScreen() {
           </Text>
         </Pressable>
 
-        <Text className="text-center text-xs font-MontserratRegular text-nexus-400 mt-4">
+        <Text className="text-center text-xs font-MontserratRegular text-nexus-400 mt-4 mb-8">
           Nexus • Tu librería digital
         </Text>
       </ScrollView>
