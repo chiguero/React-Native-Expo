@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -15,9 +15,14 @@ export default function LandingPage() {
       <ScrollView className="flex-1" contentContainerClassName="px-6 py-8">
         
         <View className="items-center mb-12 mt-8">
-          {/* Logo con emoji de libro */}
-          <View className="w-32 h-32 bg-nexus-700 rounded-3xl items-center justify-center mb-6">
-            <Text className="text-6xl">📚</Text>
+          {/* Logo con imagen local */}
+          <View className="w-32 h-32 bg-nexus-700 rounded-3xl items-center justify-center mb-6 overflow-hidden">
+            <Image
+              source={require('../assets/logo-nexus.png')}
+              className="w-20 h-20"
+              style={{ width: 80, height: 80 }}
+              resizeMode="contain"
+            />
           </View>
           
           <Text className="text-5xl font-MontserratBold text-white text-center mb-3">
